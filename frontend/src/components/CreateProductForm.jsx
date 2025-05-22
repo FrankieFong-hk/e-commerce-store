@@ -40,16 +40,15 @@ const CreateProductForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(newProduct);
     try {
       await createProduct(newProduct);
-      // setNewProduct({
-      //   name: "",
-      //   description: "",
-      //   price: "",
-      //   category: "",
-      //   image: "",
-      // });
+      setNewProduct({
+        name: "",
+        description: "",
+        price: "",
+        category: "",
+        image: "",
+      });
     } catch (error) {
       console.log(error);
     }

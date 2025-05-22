@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 import { PlusCircle, ShoppingBasket, BarChart } from "lucide-react";
 import CreateProductForm from "../../components/CreateProductForm";
 import ProductsList from "../../components/ProductsList";
 import AnalyticsTab from "../../components/AnalyticsTab";
+import useProductStore from "../../stores/useProductStore";
 
 const tabs = [
   { id: "create", label: "Create Product", icon: PlusCircle },
@@ -14,6 +15,12 @@ const tabs = [
 
 const AdminPage = () => {
   const [activeTab, setActiveTab] = React.useState("create");
+
+  const { fetchAllProducts } = useProductStore();
+
+  useEffect(() => {
+    fetchAllProducts();
+  }, [fetchAllProducts]);
 
   return (
     <div className="relative min-h-screen text-white overflow-hidden">
