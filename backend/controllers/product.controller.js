@@ -47,7 +47,9 @@ export const createProduct = async (req, res) => {
     let cloudinaryResponse = null;
 
     if (image) {
-      await cloudinary.uploader.upload(image, { folder: "products" });
+      cloudinaryResponse = await cloudinary.uploader.upload(image, {
+        folder: "products",
+      });
     }
 
     const product = await Product.create({
