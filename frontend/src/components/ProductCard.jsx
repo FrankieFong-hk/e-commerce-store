@@ -18,7 +18,6 @@ const ProductCard = ({ product }) => {
       return;
     }
     addToCart(product);
-    toast.success("Product added to cart");
   };
 
   return (
