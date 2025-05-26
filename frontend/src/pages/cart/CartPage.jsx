@@ -12,7 +12,6 @@ const CartPage = () => {
   const { cart, removeAllCartProducts } = useCartStore();
 
   const handleRemoveAllCartProducts = () => {
-    console.log("Remove all cart products");
     removeAllCartProducts();
   };
 
