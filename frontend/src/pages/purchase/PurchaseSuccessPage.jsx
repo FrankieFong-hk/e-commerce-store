@@ -9,17 +9,20 @@ import Confetti from "react-confetti";
 const PurchaseSuccessPage = () => {
   const [isProcessing, setIsProcessing] = useState(true);
   const { removeAllCartProducts } = useCartStore();
-  const [error, setError] = useState(null);
+  const [checkoutError, setCheckoutError] = useState(null);
+  const [orderId, setOrderId] = useState(null);
 
   useEffect(() => {
     const handleCheckoutSuccess = async (sessionId) => {
       try {
-        await axios.post("/payment/checkout-success", {
+        const response = await axios.post("/payment/checkout-success", {
           sessionId,
         });
         removeAllCartProducts();
+        setOrderId(response.data.orderId);
       } catch (error) {
         console.error("Error in handleCheckoutSuccess", error);
+        setCheckoutError("Failed to process checkout");
       } finally {
         setIsProcessing(false);
       }
@@ -32,7 +35,7 @@ const PurchaseSuccessPage = () => {
       handleCheckoutSuccess(sessionId);
     } else {
       setIsProcessing(false);
-      setError("Invalid session ID");
+      setCheckoutError("Invalid session ID");
     }
   }, [removeAllCartProducts]);
 
@@ -40,8 +43,9 @@ const PurchaseSuccessPage = () => {
     return <LoadingSpinner />;
   }
 
-  if (error) {
-    return <div>Error: {error}</div>;
+  if (checkoutError) {
+    console.log("Error in handleCheckoutSuccess", checkoutError);
+    return <div>Error: {checkoutError}</div>;
   }
 
   return (
@@ -72,7 +76,7 @@ const PurchaseSuccessPage = () => {
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm text-gray-400">Order number</span>
               <span className="text-sm font-semibold text-emerald-400">
-                #12345
+                #{orderId}
               </span>
             </div>
             <div className="flex items-center justify-between">
