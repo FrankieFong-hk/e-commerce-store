@@ -42,6 +42,17 @@ const useProductStore = create((set, get) => ({
     }
   },
 
+  fetchFeaturedProducts: async () => {
+    set({ loading: true });
+    try {
+      const res = await axios.get("/products/featured");
+      set({ products: res.data, loading: false });
+    } catch (error) {
+      set({ error: error.response.data.error, loading: false });
+      toast.error(error.response.data.error || "Failed to fetch products");
+    }
+  },
+
   deleteProduct: async (productId) => {
     set({ loading: true });
     try {
