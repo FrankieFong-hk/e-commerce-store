@@ -14,7 +14,10 @@ const PurchaseSuccessPage = () => {
   useEffect(() => {
     const handleCheckoutSuccess = async (sessionId) => {
       try {
-        await axios.post("/payment/checkout-success", { sessionId });
+        const response = await axios.post("/payment/checkout-success", {
+          sessionId,
+        });
+        console.log(response.data);
         clearCart();
       } catch (error) {
         console.error("Error in handleCheckoutSuccess", error);
