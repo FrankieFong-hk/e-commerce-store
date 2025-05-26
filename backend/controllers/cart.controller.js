@@ -43,10 +43,18 @@ export const addToCart = async (req, res) => {
 
 export const removeAllCartProducts = async (req, res) => {
   try {
-    const user = req.user;
-    user.cartItems = [];
-    await user.save();
-    res.json(user.cartItems);
+    // Use findByIdAndUpdate for atomic operation to avoid version conflicts
+    const result = await req.user.constructor.findByIdAndUpdate(
+      req.user._id,
+      { $set: { cartItems: [] } },
+      { new: true }
+    );
+
+    if (!result) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json(result.cartItems);
   } catch (error) {
     console.log("Error in removeAllCartProducts controller", error.message);
     res
