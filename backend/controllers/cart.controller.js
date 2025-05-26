@@ -41,6 +41,20 @@ export const addToCart = async (req, res) => {
   }
 };
 
+export const removeAllCartProducts = async (req, res) => {
+  try {
+    const user = req.user;
+    user.cartItems = [];
+    await user.save();
+    res.json(user.cartItems);
+  } catch (error) {
+    console.log("Error in removeAllCartProducts controller", error.message);
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
+  }
+};
+
 export const removeAllFromCart = async (req, res) => {
   try {
     const productId = req.params.productId;

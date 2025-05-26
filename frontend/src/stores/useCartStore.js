@@ -43,6 +43,18 @@ const useCartStore = create((set, get) => ({
     }
   },
 
+  removeAllCartProducts: async () => {
+    try {
+      await axios.delete("/cart/all");
+      get().clearCart();
+      get().calculateTotal();
+    } catch (error) {
+      toast.error(
+        error.response.data.error || "Failed to remove all products from cart"
+      );
+    }
+  },
+
   removeFromCart: async (productId) => {
     try {
       await axios.delete(`/cart/${productId}`);

@@ -9,7 +9,12 @@ import OrderSummary from "../../components/OrderSummary";
 import GiftCouponCard from "../../components/GiftCouponCard";
 
 const CartPage = () => {
-  const { cart } = useCartStore();
+  const { cart, removeAllCartProducts } = useCartStore();
+
+  const handleRemoveAllCartProducts = () => {
+    console.log("Remove all cart products");
+    removeAllCartProducts();
+  };
 
   return (
     <div className="py-8 md:py-16">
@@ -28,8 +33,17 @@ const CartPage = () => {
                 {cart.map((item) => (
                   <CartItem key={item._id} item={item} />
                 ))}
+                <div className="flex justify-end">
+                  <button
+                    className="text-white underline"
+                    onClick={handleRemoveAllCartProducts}
+                  >
+                    Clear All
+                  </button>
+                </div>
               </div>
             )}
+
             {cart.length > 0 && <PeopleAlsoBought />}
           </motion.div>
 

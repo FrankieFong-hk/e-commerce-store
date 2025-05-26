@@ -8,7 +8,7 @@ import Confetti from "react-confetti";
 
 const PurchaseSuccessPage = () => {
   const [isProcessing, setIsProcessing] = useState(true);
-  const { clearCart } = useCartStore();
+  const { removeAllCartProducts } = useCartStore();
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -17,7 +17,7 @@ const PurchaseSuccessPage = () => {
         await axios.post("/payment/checkout-success", {
           sessionId,
         });
-        clearCart();
+        removeAllCartProducts();
       } catch (error) {
         console.error("Error in handleCheckoutSuccess", error);
       } finally {
@@ -34,7 +34,7 @@ const PurchaseSuccessPage = () => {
       setIsProcessing(false);
       setError("Invalid session ID");
     }
-  }, [clearCart]);
+  }, [removeAllCartProducts]);
 
   if (isProcessing) {
     return <LoadingSpinner />;
