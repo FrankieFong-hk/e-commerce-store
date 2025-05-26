@@ -43,9 +43,12 @@ export const addToCart = async (req, res) => {
 
 export const removeAllCartProducts = async (req, res) => {
   try {
-    // Use findByIdAndUpdate for atomic operation to avoid version conflicts
-    const result = await req.user.constructor.findByIdAndUpdate(
-      req.user._id,
+    const userId = req.user._id;
+
+    // Use findOneAndUpdate for atomic operation to avoid version conflicts
+    const User = req.user.constructor;
+    const result = await User.findOneAndUpdate(
+      { _id: userId },
       { $set: { cartItems: [] } },
       { new: true }
     );
