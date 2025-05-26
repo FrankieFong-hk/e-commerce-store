@@ -91,13 +91,13 @@ const useCartStore = create((set, get) => ({
   },
 
   calculateTotal: () => {
-    const { cart, coupon } = get();
+    const { cart, coupon, isCouponApplied } = get();
     const subtotal = cart.reduce(
       (total, item) => total + item.price * item.quantity,
       0
     );
     let total = subtotal;
-    if (coupon) {
+    if (coupon && isCouponApplied) {
       const discount = subtotal * (coupon.discountPercentage / 100);
       total = subtotal - discount;
     }
