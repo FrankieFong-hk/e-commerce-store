@@ -80,7 +80,7 @@ export const deleteProduct = async (req, res) => {
     if (product.image) {
       const publicId = product.image.split("/").pop().split(".")[0];
       try {
-        await cloudinary.uploader.destroy(publicId);
+        await cloudinary.uploader.destroy(`products/${publicId}`);
         console.log("Image deleted successfully");
       } catch (error) {
         console.log("Error deleting image", error.message);
@@ -124,6 +124,56 @@ export const getProductsByCategory = async (req, res) => {
   try {
     const products = await Product.find({ category });
     res.json({ products });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
+  }
+};
+
+export const getProductById = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    res.json({ product });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
+  }
+};
+
+export const editProduct = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+
+    let cloudinaryResponse = null;
+
+    if (req.body.image) {
+      const publicId = product.image.split("/").pop().split(".")[0];
+      try {
+        await cloudinary.uploader.destroy(`products/${publicId}`);
+        cloudinaryResponse = await cloudinary.uploader.upload(req.body.image, {
+          folder: "products",
+        });
+        console.log("Image deleted successfully");
+      } catch (error) {
+        console.log("Error deleting image", error.message);
+      }
+    }
+
+    if (product) {
+      product.name = req.body.name;
+      product.description = req.body.description;
+      product.price = req.body.price;
+      product.category = req.body.category;
+      product.image = cloudinaryResponse?.secure_url
+        ? cloudinaryResponse?.secure_url
+        : "";
+      const updatedProduct = await product.save();
+      res.json(updatedProduct);
+    } else {
+      return res.status(404).json({ message: "Product not found" });
+    }
   } catch (error) {
     return res
       .status(500)

@@ -1,10 +1,29 @@
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
-import { Trash, Star } from "lucide-react";
+import { Trash, Star, Pencil } from "lucide-react";
 import useProductStore from "../stores/useProductStore";
+import EditProductsModal from "./EditProductsModal";
 
 const ProductsList = () => {
-  const { deleteProduct, toggleFeaturedProduct, products } = useProductStore();
+  const { fetchProductById, deleteProduct, toggleFeaturedProduct, products } =
+    useProductStore();
+
+  const handleEditButtonClick = async (productId) => {
+    try {
+      await fetchProductById(productId);
+      // Give time for the DOM to update with any React state changes
+      setTimeout(() => {
+        const modal = document.getElementById("edit_profile_modal");
+        if (modal) {
+          modal.showModal();
+        } else {
+          console.error("Edit modal element not found");
+        }
+      }, 0);
+    } catch (error) {
+      console.error("Error preparing product for edit:", error);
+    }
+  };
 
   return (
     <motion.div
@@ -90,7 +109,13 @@ const ProductsList = () => {
                 </div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                <div className="flex justify-center">
+                <div className="flex justify-center space-x-4">
+                  <button
+                    className="text-gray-500 hover:text-gray-300"
+                    onClick={() => handleEditButtonClick(product._id)}
+                  >
+                    <Pencil className="h-5 w-5" />
+                  </button>
                   <button
                     onClick={() => deleteProduct(product._id)}
                     className="text-red-400 hover:text-red-300"
@@ -103,6 +128,8 @@ const ProductsList = () => {
           ))}
         </tbody>
       </table>
+
+      <EditProductsModal />
     </motion.div>
   );
 };

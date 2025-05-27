@@ -2,8 +2,9 @@ import { create } from "zustand";
 import toast from "react-hot-toast";
 import axios from "../lib/axios";
 
-const useProductStore = create((set, get) => ({
+const useProductStore = create((set) => ({
   products: [],
+  singleProduct: null,
   loading: false,
   setProducts: (products) => set({ products }),
 
@@ -28,6 +29,38 @@ const useProductStore = create((set, get) => ({
     } catch (error) {
       set({ error: error.response.data.error, loading: false });
       toast.error(error.response.data.error || "Failed to fetch products");
+    }
+  },
+
+  fetchProductById: async (productId) => {
+    set({ loading: true });
+    try {
+      const res = await axios.get(`/products/${productId}`);
+      set({ singleProduct: res.data.product, loading: false });
+    } catch (error) {
+      set({ error: error.response.data.error, loading: false });
+      toast.error(error.response.data.error || "Failed to fetch product");
+    }
+  },
+
+  updateProduct: async (productId, productData) => {
+    set({ loading: true });
+    try {
+      const res = await axios.put(`/products/${productId}`, productData);
+      const updatedProduct = res.data;
+
+      set((prevState) => ({
+        products: prevState.products.map((product) =>
+          product._id === productId ? updatedProduct : product
+        ),
+        singleProduct: updatedProduct, // Keep the singleProduct reference instead of null
+        loading: false,
+      }));
+
+      toast.success("Product updated successfully");
+    } catch (error) {
+      toast.error(error.response.data.error || "Failed to update product");
+      set({ loading: false });
     }
   },
 
@@ -74,7 +107,7 @@ const useProductStore = create((set, get) => ({
     set({ loading: true });
 
     try {
-      const res = await axios.patch(`/products/${productId}`);
+      const res = await axios.patch(`/products/featured/${productId}`);
       set((prevState) => ({
         products: prevState.products.map((product) =>
           product._id === productId
