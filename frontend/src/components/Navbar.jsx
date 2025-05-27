@@ -16,6 +16,7 @@ const Navbar = () => {
             to="/"
             className="text-2xl font-bold text-emerald-400 items-center space-x-2 flex"
           >
+            <img src="../public/icon.svg" alt="" />
             E-Commerce
           </Link>
           <nav className="flex flex-wrap items-center gap-6">
@@ -49,7 +50,7 @@ const Navbar = () => {
             )}
             {isAdmin && (
               <Link
-                className="bg-emerald-700 hover:bg-emerald-600 text-white px-3 py-1 rounded-md font-medium
+                className="bg-emerald-700 hover:bg-emerald-600 text-white px-4 py-2 rounded-md font-medium
 								 transition duration-300 ease-in-out flex items-center"
                 to={"/secret-dashboard"}
               >
